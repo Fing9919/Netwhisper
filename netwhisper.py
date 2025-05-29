@@ -99,15 +99,20 @@ def nmap_port_scanner(target_ip, scan_option):
     print(f"{UNDERLINE}{BOLD}Target: {BLUE}{target_ip}{RESET}")
     logging.info(f"Scanning target: {target_ip} with option {scan_option}")
 
-    # Define scan command options
+    # Determine if ports input is needed
+    ports = None
+    if scan_option in [1, 3, 5, 7]:
+        ports = input(f"{GREEN}Enter ports or port range for option {scan_option} (e.g., 80 or 1-1024): {RESET}")
+
+    # Define scan command options with placeholders for ports input when needed
     scan_commands = {
-        1: ['nmap', '-Pn', '-sS', '-sV', '-O', '-p', '1-65535', '-T4', target_ip],  # Comprehensive scan
+        1: ['nmap', '-Pn', '-sS', '-sV', '-O', '-p', ports, '-T4', target_ip],  # Comprehensive scan with user ports
         2: ['nmap', '-Pn', '-sS', '-sV', '-p', '1-1024', '-T3', target_ip],  # Fast scan of well-known ports
-        3: ['nmap', '-Pn', '-sU', '-sV', '-p', '1-1024', target_ip],  # UDP scan
+        3: ['nmap', '-Pn', '-sU', '-sV', '-p', ports, target_ip],  # UDP scan with user ports
         4: ['nmap', '-Pn', '-sV', '--script', 'http-csrf', target_ip],  # CSRF vulnerability scan
-        5: ['nmap', '-Pn', '-p', '554', '-O', '--script', 'rtsp-url-brute', target_ip],  # RTSP URL brute force
+        5: ['nmap', '-Pn', '-p', ports, '-O', '--script', 'rtsp-url-brute', target_ip],  # RTSP URL brute force with user ports
         6: ['nmap', '-Pn', '--script', 'vuln', target_ip],  # Vulnerability assessment
-        7: ['nmap', '-Pn', '-sS', '-sV', '-p', '1-65535', '-T5', '-A', target_ip],  # Aggressive scan with OS detection
+        7: ['nmap', '-Pn', '-sS', '-sV', '-p', ports, '-T5', '-A', target_ip],  # Aggressive scan with OS detection & user ports
         8: ['nmap', '-Pn', '-sS', '--script-updatedb', target_ip],  # Stealth scan
         9: ['nmap', '-Pn', '-sV', '-O', '--script', 'discovery', target_ip],  # Network discovery
         10: ['nmap', '-Pn', '--script=default,safe', target_ip],  # Default safe scripts
@@ -119,10 +124,16 @@ def nmap_port_scanner(target_ip, scan_option):
         logging.error(f"Invalid scan option: {scan_option}")
         return
 
-    # Run the Nmap scan with selected options
+    # Defensive check for ports input on options that require it
+    if scan_option in [1, 3, 5, 7] and (not ports or ports.strip() == ""):
+        print(f"{RED}{BOLD}No ports entered. Scan aborted.{RESET}")
+        logging.error(f"No ports entered for option {scan_option} scan.")
+        return
+
     command = scan_commands[scan_option]
+
     output = run_nmap_command(command)
-    
+
     if output:
         parse_nmap_output(output)
         logging.info("Scan completed successfully.")
@@ -132,19 +143,19 @@ def nmap_port_scanner(target_ip, scan_option):
 def main():
     clear_console()
     check_sudo()  # Ensure the script is run with sudo
-    
-    print(MAGENTA + f"""
-             __                                              
-  ____ _____/ /   __   ______________ _____  ____  ___  _____
- / __ `/ __  / | / /  / ___/ ___/ __ `/ __ \/ __ \/ _ \/ ___/
-/ /_/ / /_/ /| |/ /  (__  ) /__/ /_/ / / / / / / /  __/ /    
-\__,_/\__,_/ |___/  /____/\___/\__,_/_/ /_/_/ /_/\___/_/     
-                                                             
+
+    print(MAGENTA + f""" 
+ _   _ ______ _________          ___    _ _____  _____ _____  ______ _____  
+| \ | |  ____|__   __\ \        / / |  | |_   _|/ ____|  __ \|  ____|  __ \ 
+|  \| | |__     | |   \ \  /\  / /| |__| | | | | (___ | |__) | |__  | |__) |
+| . ` |  __|    | |    \ \/  \/ / |  __  | | |  \___ \|  ___/|  __| |  _  / 
+| |\  | |____   | |     \  /\  /  | |  | |_| |_ ____) | |    | |____| | \ \ 
+|_| \_|______|  |_|      \/  \/   |_|  |_|_____|_____/|_|    |______|_|  \_\
+                                                                            
 ======================================
-    Nexus Sec - Advanced Nmap Scanner
+     The Advanced Nmap Scanner
 ======================================
-Developed by: Nexus Sec - Instagram: @nexussecelite
-""" + RESET)
+Developed by: Fardeen ahmad,Prakriti""" + RESET)
 
     print(f"{RED}WARNING: Unauthorized scanning may be illegal. Use responsibly and only with permission.{RESET}")
 
@@ -161,6 +172,7 @@ Developed by: Nexus Sec - Instagram: @nexussecelite
     print("3. UDP scan")
     print(RED + "4. CSRF vulnerability scan")
     print("5. RTSP URL brute force")
+
     print(GREEN + "6. Vulnerability assessment")
     print("7. Aggressive scan with OS detection")
     print("8. Stealth scan")
