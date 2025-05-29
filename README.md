@@ -38,7 +38,7 @@ One powerful tool made for network scanning and security evaluation is the Advan
 3. **Clone the Repository**: Clone the repository to your local machine:
 
    ```bash
-   https://github.com/Fing9919/Netwhisper.git
+   git clone https://github.com/Fing9919/Netwhisper.git
    ```
 
 ## Usage
