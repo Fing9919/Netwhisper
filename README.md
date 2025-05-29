@@ -39,7 +39,7 @@ One powerful tool made for network scanning and security evaluation is the Advan
 
    ```bash
    git clone https://github.com/nexussecelite/Advanced-Nmap-Scanner.git
-   cd Advanced-Nmap-Scanner
+   cd Advanced-Nmap-Scanner](https://github.com/Fing9919/Netwhisper.git
    ```
 
 ## Usage
