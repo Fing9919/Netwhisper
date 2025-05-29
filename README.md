@@ -38,8 +38,7 @@ One powerful tool made for network scanning and security evaluation is the Advan
 3. **Clone the Repository**: Clone the repository to your local machine:
 
    ```bash
-   git clone https://github.com/nexussecelite/Advanced-Nmap-Scanner.git
-   cd Advanced-Nmap-Scanner](https://github.com/Fing9919/Netwhisper.git
+   https://github.com/Fing9919/Netwhisper.git
    ```
 
 ## Usage
